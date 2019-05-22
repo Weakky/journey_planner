@@ -1,17 +1,17 @@
-import { writeFileSync } from "fs";
-import { StopWithNumber as Stop } from "../types";
-import { getTimestampId } from "./utils";
-const stopsByDate = require("../../stops_by_hour.json") as StopByDate;
-const stops = require("../../stops_date_number.json") as Stop[];
+import { writeFileSync } from 'fs';
+import { StopWithNumber as Stop } from '../types';
+import { getTimestampId } from './utils';
+const stopsByDate = require('../../stops_by_hour.json') as StopByDate;
+const stops = require('../../stops_date_number.json') as Stop[];
 
 type StopByDate = Record<string, Stop[]>;
 
 const HOUR = 60 * 60 * 1000;
 const TRANSFER_TIME_THRESHOLD = HOUR * 2;
 
-console.time("Compute neighbour map...");
+console.time('Compute neighbour map...');
 buildNeighbourMap();
-console.timeEnd("Compute neighbour map...");
+console.timeEnd('Compute neighbour map...');
 
 function buildNeighbourMap() {
   const length = stops.length;
@@ -41,7 +41,7 @@ function buildNeighbourMap() {
     }
   }
 
-  writeFileSync("neighbour_map.json", JSON.stringify(output, null, 2));
+  writeFileSync('neighbour_map.json', JSON.stringify(output, null, 2));
 }
 
 function findReachableStops(cur: Stop) {
@@ -55,11 +55,7 @@ function findReachableStops(cur: Stop) {
     const neighbourDepartTime = n.departure;
     const threshold = curArrivalTime + TRANSFER_TIME_THRESHOLD;
 
-    if (
-      n.station_id === cur.station_id &&
-      n.id !== cur.id &&
-      neighbourDepartTime < threshold
-    ) {
+    if (n.station_id === cur.station_id && n.id !== cur.id && neighbourDepartTime < threshold) {
       output.push(n.id);
     }
   }
@@ -72,9 +68,7 @@ function getReachableStops(cur: Stop): Stop[] {
   const curArrivalTime = cur.arrival;
   const sameHourTimestamp = getTimestampId(new Date(curArrivalTime));
   const nextHourTimestamp = getTimestampId(new Date(curArrivalTime + HOUR));
-  const nextTwoHourTimestamp = getTimestampId(
-    new Date(curArrivalTime + HOUR * 2)
-  );
+  const nextTwoHourTimestamp = getTimestampId(new Date(curArrivalTime + HOUR * 2));
   const stopsOfSameHour = stopsByDate[sameHourTimestamp];
   const stopsOfNextHour = stopsByDate[nextHourTimestamp];
   const stopsOfNextTwoHour = stopsByDate[nextTwoHourTimestamp];

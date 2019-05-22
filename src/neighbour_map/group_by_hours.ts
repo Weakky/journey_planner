@@ -1,17 +1,14 @@
-import { StopWithString as Stop } from "../types";
-import { writeFileSync } from "fs";
-import { join } from "path";
-import { getTimestampId, getTime } from "./utils";
+import { StopWithString as Stop } from '../types';
+import { writeFileSync } from 'fs';
+import { join } from 'path';
+import { getTimestampId, getTime } from './utils';
 
-const stops = require("../../stops_date_string.json") as Stop[];
+const stops = require('../../stops_date_string.json') as Stop[];
 
-const GROUP_BY_FILE_NAME = join(__dirname, "../../stops_by_hour.json");
-const TIMESTAMP_DATE_FILE_NAME = join(
-  __dirname,
-  "../../stops_date_number.json"
-);
+const GROUP_BY_FILE_NAME = join(__dirname, '../../stops_by_hour.json');
+const TIMESTAMP_DATE_FILE_NAME = join(__dirname, '../../stops_date_number.json');
 
-remapStopDate()
+remapStopDate();
 
 function remapStopDate() {
   const length = stops.length;
@@ -40,8 +37,5 @@ function remapStopDate() {
   }
 
   writeFileSync(GROUP_BY_FILE_NAME, JSON.stringify(groupedByHour, null, 2));
-  writeFileSync(
-    TIMESTAMP_DATE_FILE_NAME,
-    JSON.stringify(stopsWithTimestamp, null, 2)
-  );
+  writeFileSync(TIMESTAMP_DATE_FILE_NAME, JSON.stringify(stopsWithTimestamp, null, 2));
 }

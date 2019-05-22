@@ -3,9 +3,9 @@ export function getTimestampId(departure: Date) {
 }
 
 export function getTime(dateString: string) {
-  const [date, time] = dateString.split(" ");
-  const [year, month, day] = date.split("-");
-  const [hours, minutes, seconds] = time.split(":");
+  const [date, time] = dateString.split(' ');
+  const [year, month, day] = date.split('-');
+  const [hours, minutes, seconds] = time.split(':');
 
   return new Date(
     parseInt(year, 10),

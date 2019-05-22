@@ -1,5 +1,5 @@
-import { writeFileSync } from "fs";
-import { StopWithNumber as Stop } from "./types";
+import { writeFileSync } from 'fs';
+import { StopWithNumber as Stop } from './types';
 
 // const journey: Journey = {
 //   id: 1,
@@ -39,20 +39,20 @@ const journeysByTrainId = {
 };
 
 const journeysMap = {
-  "A-B": {
-    "05-02-2019": [1, 2, 3],
-    "05-03-2019": [4, 5, 6],
-    "05-04-2019": []
+  'A-B': {
+    '05-02-2019': [1, 2, 3],
+    '05-03-2019': [4, 5, 6],
+    '05-04-2019': []
   },
-  "A-C": {
-    "05-02-2019": [],
-    "05-03-2019": [],
-    "05-04-2019": []
+  'A-C': {
+    '05-02-2019': [],
+    '05-03-2019': [],
+    '05-04-2019': []
   },
-  "A-D": {
-    "05-02-2019": [],
-    "05-03-2019": [],
-    "05-04-2019": []
+  'A-D': {
+    '05-02-2019': [],
+    '05-03-2019': [],
+    '05-04-2019': []
   }
 };
 
@@ -106,7 +106,7 @@ interface Trip {
   arrival: number;
 }
 
-type TripTuple = [number, number]
+type TripTuple = [number, number];
 
 interface Journey {
   from: number;
@@ -202,17 +202,14 @@ interface StackItem {
 //   return output
 // }
 
-const stops = require("../stops_date_number.json") as Stop[];
-const stopsById = require("../stops_by_id.json") as Record<number, Stop>;
-const neighbourMap = require("../neighbour_map.json") as Record<
-  number,
-  number[]
->;
+const stops = require('../stops_date_number.json') as Stop[];
+const stopsById = require('../stops_by_id.json') as Record<number, Stop>;
+const neighbourMap = require('../neighbour_map.json') as Record<number, number[]>;
 
-console.time("Computing graph...");
+console.time('Computing graph...');
 const result = computeConnectionJourneys(stops, {});
-writeFileSync("graph.json", JSON.stringify(result, null, 2));
-console.timeEnd("Computing graph...");
+writeFileSync('graph.json', JSON.stringify(result, null, 2));
+console.timeEnd('Computing graph...');
 
 function getNeighbours(ids: number[]) {
   const neighbours: Stop[] = [];
@@ -225,10 +222,7 @@ function getNeighbours(ids: number[]) {
   return neighbours;
 }
 
-function computeConnectionJourneys(
-  stops: Stop[],
-  journeys: Journeys
-): Journeys {
+function computeConnectionJourneys(stops: Stop[], journeys: Journeys): Journeys {
   const stopsLength = 20000;
   const stack: StackItem[] = [];
 
@@ -346,19 +340,11 @@ function computeDirectJourneys(train: Train, journeys: Journeys): Journeys {
       const departure = getTime(from.departure);
       const arrival = getTime(to.arrival);
 
-      if (
-        !journeys[`${from.station_id}-${to.station_id}`][
-          extractDate(from.departure)
-        ]
-      ) {
-        journeys[`${from.station_id}-${to.station_id}`][
-          extractDate(from.departure)
-        ] = [];
+      if (!journeys[`${from.station_id}-${to.station_id}`][extractDate(from.departure)]) {
+        journeys[`${from.station_id}-${to.station_id}`][extractDate(from.departure)] = [];
       }
 
-      journeys[`${from.station_id}-${to.station_id}`][
-        extractDate(from.departure)
-      ].push({
+      journeys[`${from.station_id}-${to.station_id}`][extractDate(from.departure)].push({
         from: from.station_id,
         to: to.station_id,
         departure,
@@ -380,13 +366,13 @@ function computeDirectJourneys(train: Train, journeys: Journeys): Journeys {
 }
 
 function extractDate(dateString: string) {
-  return dateString.split(" ")[0];
+  return dateString.split(' ')[0];
 }
 
 function getTime(dateString: string) {
-  const [date, time] = dateString.split(" ");
-  const [year, month, day] = date.split("-");
-  const [hours, minutes, seconds] = time.split(":");
+  const [date, time] = dateString.split(' ');
+  const [year, month, day] = date.split('-');
+  const [hours, minutes, seconds] = time.split(':');
 
   return new Date(
     parseInt(year, 10),
