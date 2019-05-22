@@ -56,48 +56,6 @@ const journeysMap = {
   }
 };
 
-// const stops = require('./stops.json') as Stop[]
-// const trains = require('./trains.json') as Train[]
-
-// /**
-//  *
-//  * train: 1
-//  * stops: 1, 2, 3
-//  *
-//  * train: 2
-//  * stops: 3, 4, 5
-//  */
-
-// function buildGraph(): Journeys {
-//   const stopsLength = stops.length
-//   const output: Journeys = {}
-
-//   // Algo A -> tout les trajets direct
-
-//   for (let i = 0; i < stopsLength; i++) {
-//     const stopA = stops[i]
-
-//     //
-//     for (let j = 0; j < stopsLength; j++) {
-//       const stopB = stops[j]
-
-//       if (!output[`${stopA.id}-${stopB.id}`]) {
-//         output[`${stopA.id}-${stopB.id}`] = {}
-//       }
-
-//       output[`${stopA.id}-${stopB.id}`][stopA.departure].push(buildJourney(stopA, stopB))
-//     }
-//   }
-
-//   return output
-// }
-
-// function findReachableStops(target: Stop, allStops: Stop[]) {
-//   return allStops.filter(s => s.station_id === target.station_id && s.id !== target.id)
-// }
-
-// function buildJourney(stopA: Stop, stopB: Stop): Journey {}
-
 interface Trip {
   trainId: number;
   from: number;
@@ -140,67 +98,6 @@ interface StackItem {
   value: Stop;
   legs: Trip[];
 }
-
-//const trains = require('../data/big_trains.json') as Train[]
-
-//const map = computeTravels({ trains })
-
-// // const keys = Object.keys(map)
-// // const keysLength = keys.length
-
-// // let jsonOutput = ''
-
-// // for (let i = 0; i < keysLength; i++) {
-// //   jsonOutput += '{'
-// //   jsonOutput += `"${keys[i]}":`
-// //   jsonOutput += JSON.stringify(map[keys[i]])
-// //   jsonOutput += '}\n'
-// // }
-
-// function computeTravels(input: { trains: Train[] }) {
-//   let output: Journeys = {}
-//   const { trains } = input
-//   const trainLength = trains.length
-
-//   for (let i = 0; i < trainLength; i++) {
-//     const train = trains[i]
-
-//     console.time(`Train [${train.id}]: ${i}/${trains.length}`)
-//     output = computeDirectJourneys(train, output)
-//     console.timeEnd(`Train [${train.id}]: ${i}/${trains.length}`)
-//   }
-
-//   for (let i = 0; i < stops.length; i++) {
-//     const currStop = stops[i]
-//     const reachableStops = findReachableStops(currStop, stops)
-//     const firstReachableStop = reachableStops[0]
-//   }
-
-//   return output
-// }
-
-// function findReachableStops(cur: Stop, allStops: Stop[]) {
-//   const length = allStops.length
-//   const output: Stop[] = []
-//   const curArrivalTime = getTime(cur.arrival)
-//   const HOUR = 60 * 60 * 1000
-//   const TRANSFER_TIME_THRESHOLD = HOUR * 2
-
-//   for (let i = 0; i < length; i++) {
-//     const n = allStops[i]
-//     const neighbourDepartTime = getTime(n.departure)
-
-//     if (
-//       n.station_id === cur.station_id &&
-//       n.id !== cur.id &&
-//       curArrivalTime + TRANSFER_TIME_THRESHOLD < neighbourDepartTime
-//     ) {
-//       output.push(n)
-//     }
-//   }
-
-//   return output
-// }
 
 const stops = require('../stops_date_number.json') as Stop[];
 const stopsById = require('../stops_by_id.json') as Record<number, Stop>;
@@ -314,6 +211,23 @@ function addJourney(journey: Journey, journeys: Journeys) {
   journeys[journeyId][timestampId].push(journey);
 
   return journeys;
+}
+
+
+function journeysForDirectTrains(input: { trains: Train[] }) {
+  let output: Journeys = {}
+  const { trains } = input
+  const trainLength = trains.length
+
+  for (let i = 0; i < trainLength; i++) {
+    const train = trains[i]
+
+    console.time(`Train [${train.id}]: ${i}/${trains.length}`)
+    output = computeDirectJourneys(train, output)
+    console.timeEnd(`Train [${train.id}]: ${i}/${trains.length}`)
+  }
+
+  return output
 }
 
 function computeDirectJourneys(train: Train, journeys: Journeys): Journeys {
